@@ -2,7 +2,7 @@ import esbuild from 'esbuild';
 import fs from 'fs/promises';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 
-function buildWorker({ entry, out, debug, external } = {}) {
+function buildWorker({ entry, out, debug, external } = {}) { // The function already accepts 'external'
 	return esbuild.build({
 		plugins: [NodeModulesPolyfillPlugin()],
 		platform: 'browser',
@@ -10,7 +10,7 @@ function buildWorker({ entry, out, debug, external } = {}) {
 		entryPoints: [entry],
 		sourcemap: true,
 		outfile: out,
-		external,
+		external, // Pass the 'external' array here
 		logLevel: 'warning',
 		format: 'esm',
 		target: 'es2022',
@@ -33,6 +33,7 @@ let result = await buildWorker({
 	entry: './src/worker.js',
 	out: './dist/worker.js',
 	debug: false,
+	external: ['cloudflare:sockets'], // <--- 在这里添加 external 依赖
 });
 
 if (result.metafile) {
